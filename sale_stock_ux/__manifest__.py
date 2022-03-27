@@ -32,7 +32,7 @@
         'sale_stock',
         'sale_ux',
         'stock_ux',
-        'web_ir_actions_act_window_message',
+        # 'web_ir_actions_act_window_message',
     ],
     'data': [
         'data/ir_actions_data.xml',
@@ -46,7 +46,8 @@
     ],
     'demo': [
     ],
-    'installable': False,
+    'installable': True,
+    'installable': True,
     'auto_install': True,
     'application': False,
 }

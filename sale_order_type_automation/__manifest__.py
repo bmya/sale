@@ -30,7 +30,7 @@
         # queremos que el pago creado sea un payment group
         'account_payment_group',
         'stock_ux',
-        'sale_multic_fix',
+        # 'sale_multic_fix',
     ],
     'category': 'Sale Management',
     'demo': [
