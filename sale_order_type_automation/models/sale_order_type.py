@@ -83,10 +83,7 @@ class SaleOrderType(models.Model):
         help='Jouranl used only with payment_automation. As manual payment '
         'method is used, only journals with manual method are shown.'
     )
-    book_id = fields.Many2one(
-        'stock.book',
-        'Voucher Book',
-    )
+    book_id = fields.Many2one('stock.book', 'Voucher Book')
     set_done_on_confirmation = fields.Boolean(
         help="Upon confirmation set"
         " sale order done instead of leaving it on"
@@ -95,6 +92,7 @@ class SaleOrderType(models.Model):
     auto_done_setting = fields.Boolean(
         compute='_compute_auto_done_setting',
     )
+    user_ids = fields.Many2many('res.users', string='Usuarios Autorizados')
 
     @api.depends()
     def _compute_auto_done_setting(self):

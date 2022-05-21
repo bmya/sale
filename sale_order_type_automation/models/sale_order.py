@@ -2,7 +2,7 @@
 # For copyright and license notices, see __manifest__.py file in module root
 # directory
 ##############################################################################
-from odoo import models, _
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 import logging
 
@@ -11,6 +11,22 @@ _logger = logging.getLogger(__name__)
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
+
+    l10n_latam_document_type_id = fields.Many2one('l10n_latam.document.type', string='Tipo de Documento',
+                                                  default=False)
+    type_id = fields.Many2one(
+        tracking=True,
+        readonly=True,
+        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+        default=False
+    )
+
+    available_type_ids = fields.One2many('sale.order.type', compute='_get_available_type_ids')
+
+    @api.depends('user_id')
+    def _get_available_type_ids(self):
+        for r in self:
+            r.available_type_ids = self.env['sale.order.type'].search([]).filtered(lambda x: r.user_id in x.user_ids)
 
     def run_invoicing_atomation(self):
         for rec in self.filtered(
@@ -35,6 +51,20 @@ class SaleOrder(models.Model):
             invoices = self._create_invoices(final=True)
             if not invoices:
                 continue
+            if rec.l10n_latam_document_type_id:
+                for inv in invoices:
+                    inv.l10n_latam_document_type_id = rec.l10n_latam_document_type_id
+            else:
+                for inv in invoices:
+                    if rec.l10n_latam_document_type_id:
+                        inv.l10n_latam_document_type_id = rec.l10n_latam_document_type_id
+                    else:
+                        if inv.partner_id.l10n_cl_sii_taxpayer_type == 1:
+                            inv.l10n_latam_document_type_id = self.env.ref('l10n_cl.dc_a_f_dte')
+                        elif nv.partner_id.l10n_cl_sii_taxpayer_type == 1:
+                            inv.l10n_latam_document_type_id = self.env.ref('l10n_cl.dc_b_f_dte')
+                        else:
+                            inv.l10n_latam_document_type_id = False
 
             if rec.type_id.invoicing_atomation == 'validate_invoice':
                 invoices.sudo().action_post()
@@ -111,6 +141,9 @@ class SaleOrder(models.Model):
                 return True
 
     def action_confirm(self):
+        for r in self:
+            if not r.type_id:
+                raise UserError('No ha seleccionado el tipo de venta')
         res = super().action_confirm()
         # we use this because compatibility with sale exception module
         if isinstance(res, bool) and res:
