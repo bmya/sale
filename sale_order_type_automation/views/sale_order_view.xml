@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="sot_sale_order_type_2_form_view" model="ir.ui.view">
+            <field name="name">sale.order.latam_doc.form.view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_order_type.sot_view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="type_id" position="after">
+                    <field name="available_type_ids" invisible="1"/>
+                    <field name="l10n_latam_document_type_id" domain="[('code', 'in', ['39', '33'])]"/>
+                </field>
+                <field name="type_id" position="attributes">
+                    <attribute name="required">0</attribute>
+                    <attribute name="domain">[('id', 'in', available_type_ids)]</attribute>
+                </field>
+
+            </field>
+        </record>
+    </data>
+</odoo>
