@@ -92,7 +92,7 @@ class SaleOrder(models.Model):
         for rec in self.filtered(
                 lambda x: x.type_id.picking_atomation != 'none' and
                 x.procurement_group_id):
-            jit_installed = self.env['ir.module.module'].search(
+            jit_installed = self.env['ir.module.module'].sudo().search(
                 [('name', '=', 'procurement_jit'),
                     ('state', '=', 'installed')], limit=1)
             # we add invalidate because on boggio we have add an option
