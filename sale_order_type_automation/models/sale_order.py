@@ -23,6 +23,11 @@ class SaleOrder(models.Model):
 
     available_type_ids = fields.One2many('sale.order.type', compute='_get_available_type_ids')
 
+    @api.onchange('partner_id')
+    def _get_default_type_id(self):
+        # se agrega este método para asegurar que cuando se cambie el cliente el tipo vuelva a quedar en cero
+        self.type_id = False
+
     @api.depends('user_id')
     def _get_available_type_ids(self):
         for r in self:
@@ -57,7 +62,7 @@ class SaleOrder(models.Model):
                     else:
                         if inv.partner_id.l10n_cl_sii_taxpayer_type == 1:
                             inv.l10n_latam_document_type_id = self.env.ref('l10n_cl.dc_a_f_dte')
-                        elif nv.partner_id.l10n_cl_sii_taxpayer_type == 1:
+                        elif inv.partner_id.l10n_cl_sii_taxpayer_type == 1:
                             inv.l10n_latam_document_type_id = self.env.ref('l10n_cl.dc_b_f_dte')
                         else:
                             inv.l10n_latam_document_type_id = False
