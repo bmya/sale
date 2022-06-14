@@ -95,6 +95,7 @@ class SaleOrderType(models.Model):
     auto_done_setting = fields.Boolean(
         compute='_compute_auto_done_setting',
     )
+    user_ids = fields.Many2many('res.users', string='Usuarios Autorizados')
 
     @api.depends()
     def _compute_auto_done_setting(self):

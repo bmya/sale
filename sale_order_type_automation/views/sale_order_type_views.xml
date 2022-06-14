@@ -17,6 +17,13 @@
                 <field name="auto_done_setting" invisible="1"/>
                 <field name="set_done_on_confirmation" attrs="{'invisible' : [('auto_done_setting', '=', True)]}"/>
             </field>
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Usuarios autorizados">
+                        <field name="user_ids" mode="tree"/>
+                    </page>
+                </notebook>
+            </xpath>
         </field>
     </record>
 </odoo>
