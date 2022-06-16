@@ -8,13 +8,14 @@
             <field name="arch" type="xml">
                 <field name="type_id" position="after">
                     <field name="available_type_ids" invisible="1"/>
-                    <field name="l10n_latam_document_type_id" domain="[('code', 'in', ['39', '33'])]"/>
+                    <field name="l10n_latam_document_type_id" domain="[('code', 'in', ['39', '33'])]"
+                           attrs="{'invisible': [('type_id', '=', False)], 'required': [('type_id', '!=', False)]}"
+                    />
                 </field>
                 <field name="type_id" position="attributes">
                     <attribute name="required">0</attribute>
                     <attribute name="domain">[('id', 'in', available_type_ids)]</attribute>
                 </field>
-
             </field>
         </record>
     </data>

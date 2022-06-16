@@ -143,12 +143,9 @@ class SaleOrder(models.Model):
                 return True
 
     def action_confirm(self):
-        for r in self:
-            if not r.type_id:
-                raise UserError('No ha seleccionado el tipo de venta')
         res = super().action_confirm()
         # we use this because compatibility with sale exception module
-        if isinstance(res, bool) and res:
+        if isinstance(res, bool) and res and self.type_id:
             # because it's needed to return actions if exists
             res = self.run_picking_atomation()
             self.sudo().run_invoicing_atomation()
