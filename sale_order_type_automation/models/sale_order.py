@@ -13,11 +13,17 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     l10n_latam_document_type_id = fields.Many2one('l10n_latam.document.type', string='Tipo de Documento', default=False)
+    l10n_co_edi_type = fields.Selection([
+        ('1', 'Factura de venta'),
+        ('2', 'Factura de exportación'),
+        ('3', 'Documento electrónico de transmisión – tipo 03'),
+        ('4', 'Factura electrónica de Venta - tipo 04'),
+    ], required=True, default='1', string='Tipo de Documento', states={'draft': [('readonly', False)]})
     type_id = fields.Many2one(tracking=True, readonly=True,
         states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
         default=False
     )
-
+    country_code = fields.Char(related='company_id.country_id.code', readonly=True)
     available_type_ids = fields.One2many('sale.order.type', compute='_get_available_type_ids')
 
     @api.onchange('partner_id')

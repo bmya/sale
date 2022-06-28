@@ -7,14 +7,15 @@
             <field name="inherit_id" ref="sale_order_type.sot_view_order_form"/>
             <field name="arch" type="xml">
                 <field name="type_id" position="after">
+                    <field name="country_code" invisible="1"/>
                     <field name="available_type_ids" invisible="1"/>
-                    <field name="l10n_latam_document_type_id" domain="[('code', 'in', ['39', '33'])]"
-                           attrs="{'invisible': [('type_id', '=', False)], 'required': [('type_id', '!=', False)]}"
-                    />
+                    <field name="l10n_latam_document_type_id" domain="[('country_id.code', '=', country_code), '|', ('code', 'in', ['39', '33']), ('code', 'in', ['01', '03'])]"
+                           attrs="{'invisible': ['|', ('type_id', '=', False), ('country_code', '=', 'CO')], 'required': [('type_id', '!=', False), ('country_code', '!=', 'CO')]}"/>
+                    <field name="l10n_co_edi_type" attrs="{'invisible': ['|', ('type_id', '=', False), ('country_code', '!=', 'CO')], 'required': [('type_id', '!=', False), ('country_code', '=', 'CO')]}"/>
                 </field>
                 <field name="type_id" position="attributes">
                     <attribute name="required">0</attribute>
-                    <attribute name="domain">[('id', 'in', available_type_ids)]</attribute>
+                    <attribute name="domain">[('id', 'in', available_type_ids), ('journal_id.company_id', '=', company_id)]</attribute>
                 </field>
             </field>
         </record>
