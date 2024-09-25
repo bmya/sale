@@ -14,12 +14,7 @@ class SaleOrder(models.Model):
 
     l10n_latam_document_type_id = fields.Many2one('l10n_latam.document.type', string='Tipo de Documento',
                                                   default=False)
-    type_id = fields.Many2one(
-        tracking=True,
-        readonly=True,
-        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
-        default=False
-    )
+    type_id = fields.Many2one(tracking=True, default=False)
 
     available_type_ids = fields.One2many('sale.order.type', compute='_get_available_type_ids')
 

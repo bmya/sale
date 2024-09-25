@@ -13,8 +13,8 @@
                 <field name="type_id" position="attributes">
                     <attribute name="required">0</attribute>
                     <attribute name="domain">[('id', 'in', available_type_ids)]</attribute>
+                    <attribute name="readonly">state in ('sale', 'cancel')</attribute>
                 </field>
-
             </field>
         </record>
     </data>
