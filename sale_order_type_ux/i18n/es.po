@@ -3,13 +3,14 @@
 # 	* sale_order_type_ux
 # 
 # Translators:
+# manucep, 2024
 # Juan José Scarafía <scarafia.juanjose@gmail.com>, 2024
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-13 12:46+0000\n"
+"POT-Creation-Date: 2024-09-27 14:36+0000\n"
 "PO-Revision-Date: 2023-12-26 21:47+0000\n"
 "Last-Translator: Juan José Scarafía <scarafia.juanjose@gmail.com>, 2024\n"
 "Language-Team: Spanish (https://app.transifex.com/adhoc/teams/46451/es/)\n"
@@ -36,12 +37,14 @@ msgid "Billing Journal"
 msgstr "Diario de facturación"
 
 #. module: sale_order_type_ux
-#: model:ir.model.fields,help:sale_order_type_ux.field_sale_order_type__journal_id
-msgid ""
-"Billing journal to be used by default. No matter invoice being created "
-"automatically or manually. If no journal is set here, default journal will "
-"be used"
-msgstr ""
+#: model:ir.model.fields,field_description:sale_order_type_ux.field_sale_order_type__company_id
+msgid "Company"
+msgstr "Compañía"
+
+#. module: sale_order_type_ux
+#: model:sale.order.type,name:sale_order_type_ux.default_sale_order_type
+msgid "Default"
+msgstr "Por defecto"
 
 #. module: sale_order_type_ux
 #: model:ir.model.fields,field_description:sale_order_type_ux.field_sale_order_type__fiscal_position_id
@@ -54,11 +57,29 @@ msgid ""
 "If you choose a fiscal position then this fiscal positioon would be used as "
 "default instead of the automatically detected or setted on the partner"
 msgstr ""
+"Si eliges una posición fiscal, esta posición fiscal se utilizará como "
+"predeterminada en lugar de la detectada automáticamente o establecida en la "
+"empresa."
 
 #. module: sale_order_type_ux
 #: model:ir.model,name:sale_order_type_ux.model_account_move
 msgid "Journal Entry"
 msgstr "Asiento contable"
+
+#. module: sale_order_type_ux
+#: model_terms:ir.ui.view,arch_db:sale_order_type_ux.sale_order_type_form_view
+msgid "Notes"
+msgstr "Notas"
+
+#. module: sale_order_type_ux
+#: model_terms:ir.ui.view,arch_db:sale_order_type_ux.sale_order_type_form_view
+msgid "Predefined fields"
+msgstr "Campos predefinidos"
+
+#. module: sale_order_type_ux
+#: model:ir.model.fields,field_description:sale_order_type_ux.field_sale_order_type__pricelist_id
+msgid "Pricelist"
+msgstr "Tarifa"
 
 #. module: sale_order_type_ux
 #: model:ir.model,name:sale_order_type_ux.model_sale_advance_payment_inv
@@ -84,11 +105,22 @@ msgstr "Secuencia"
 #: model:ir.model.fields,help:sale_order_type_ux.field_sale_order_type__active
 msgid "Set active to false to hide the type of sale without removing it."
 msgstr ""
+"Establezca activo en falso para ocultar el tipo de venta sin eliminarlo."
 
 #. module: sale_order_type_ux
 #: model:ir.model.fields,field_description:sale_order_type_ux.field_sale_order_type__team_id
 msgid "Team"
 msgstr "Equipo"
+
+#. module: sale_order_type_ux
+#: model:ir.model.fields,help:sale_order_type_ux.field_sale_order_type__company_id
+#: model:ir.model.fields,help:sale_order_type_ux.field_sale_order_type__pricelist_id
+#: model:ir.model.fields,help:sale_order_type_ux.field_sale_order_type__team_id
+#: model:ir.model.fields,help:sale_order_type_ux.field_sale_order_type__warehouse_id
+msgid ""
+"This field will not be considered for sales coming from eCommerce. You "
+"should configure it directly in Settings > Website."
+msgstr ""
 
 #. module: sale_order_type_ux
 #: model:ir.model.fields,field_description:sale_order_type_ux.field_sale_order__type_id
@@ -99,3 +131,8 @@ msgstr "Tipo"
 #: model:ir.model,name:sale_order_type_ux.model_sale_order_type
 msgid "Type of sale order"
 msgstr "Tipo de pedido de venta"
+
+#. module: sale_order_type_ux
+#: model:ir.model.fields,field_description:sale_order_type_ux.field_sale_order_type__warehouse_id
+msgid "Warehouse"
+msgstr "Almacén"

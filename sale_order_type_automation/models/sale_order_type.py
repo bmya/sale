@@ -81,12 +81,14 @@ class SaleOrderType(models.Model):
         # "('company_id', '=', company_id), "
         "('inbound_payment_method_line_ids.code', '=', 'manual')]",
         help='Journal used only with payment_automation. As manual payment '
-        'method is used, only journals with manual method are shown.'
+        'method is used, only journals with manual method are shown. '
+        'This field will not be considered for sales coming from eCommerce. '
+        'You should configure it directly in Settings > Website.',
+        store=True,
+        readonly=False,
+        compute='_compute_payment_journal_id'
     )
-    book_id = fields.Many2one(
-        'stock.book',
-        'Voucher Book',
-    )
+
     set_done_on_confirmation = fields.Boolean(
         help="Upon confirmation set"
         " sale order done instead of leaving it on"
@@ -96,6 +98,11 @@ class SaleOrderType(models.Model):
         compute='_compute_auto_done_setting',
     )
     user_ids = fields.Many2many('res.users', string='Usuarios Autorizados')
+
+    @api.depends('payment_atomation')
+    def _compute_payment_journal_id(self):
+        for rec in self.filtered(lambda x: x.payment_atomation == 'none'):
+            rec.payment_journal_id = False
 
     @api.depends()
     def _compute_auto_done_setting(self):

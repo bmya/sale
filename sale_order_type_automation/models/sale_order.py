@@ -61,13 +61,15 @@ class SaleOrder(models.Model):
                             inv.l10n_latam_document_type_id = self.env.ref('l10n_cl.dc_b_f_dte')
                         else:
                             inv.l10n_latam_document_type_id = False
-            validate_using_try_except = bool(self._context.get("validate_using_try_except"))
-            if not validate_using_try_except and rec.type_id.invoicing_atomation == 'validate_invoice':
-                invoices.sudo().action_post()
-            elif validate_using_try_except or rec.type_id.invoicing_atomation == 'try_validate_invoice':
+            if rec.type_id.invoicing_atomation == 'validate_invoice':
+                if self._context.get("commit_invoice_automation"):
+                    rec.env.cr.commit()
                 try:
                     invoices.sudo().action_post()
                 except Exception as error:
+                    rec.env.cr.rollback()
+                    if not self._context.get("commit_invoice_automation"):
+                        raise error
                     message = _(
                         "We couldn't validate the automatically created "
                         "invoices (ids %s), you will need to validate them"
@@ -91,15 +93,14 @@ class SaleOrder(models.Model):
             jit_installed = self.env['ir.module.module'].sudo().search(
                 [('name', '=', 'procurement_jit'),
                     ('state', '=', 'installed')], limit=1)
+            stock_voucher_installed = self.env['ir.module.module'].search(
+                [('name', '=', 'stock_voucher'),
+                    ('state', '=', 'installed')], limit=1)
             # we add invalidate because on boggio we have add an option
             # for tracking_disable and with that setup pickings where not seen
             # rec.invalidate_cache()
             pickings = rec.picking_ids.filtered(
                 lambda x: x.state not in ('done', 'cancel'))
-            if rec.type_id.book_id:
-                pickings.write({'book_id': rec.type_id.book_id.id})
-            # because of ensure_one on delivery module
-            actions = []
             if not jit_installed:
                 pickings.action_assign()
             # ordenamos primeros los pickings asignados y luego el resto
@@ -119,22 +120,12 @@ class SaleOrder(models.Model):
                         raise UserError(_(
                             'The following products are not available, we '
                             'suggest to check stock or to use a sale type that'
-                            ' force availability.\nProducts:\n* %s\n '
-                        ) % ('\n *'.join(x.name for x in products)))
+                            'force availability.\nProducts:\n* %s\n'
+                        ) % ('\n * '.join(x.name for x in products)))
                     for op in pick.mapped('move_line_ids'):
                         op.quantity = op.quantity_product_uom
-                pick.button_validate()
-                # append action records to print the reports of the pickings
-                #  involves
-                if pick.book_required:
-                    actions.append(pick.do_print_voucher())
-            if actions:
-                return {
-                    'actions': actions,
-                    'type': 'ir.actions.act_multi',
-                }
-            else:
-                return True
+                if not stock_voucher_installed:
+                    pick.button_validate()
 
     def action_confirm(self):
         for r in self:
@@ -144,10 +135,10 @@ class SaleOrder(models.Model):
         # we use this because compatibility with sale exception module
         if isinstance(res, bool) and res:
             # because it's needed to return actions if exists
-            res = self.run_picking_atomation()
+            self.run_picking_atomation()
             self.sudo().run_invoicing_atomation()
             if self.type_id.set_done_on_confirmation:
-                self.action_done()
+                self.action_lock()
         return res
 
     def _prepare_invoice(self):
